@@ -88,7 +88,7 @@ This is the part I care most about. Before this I worked in quality at an FDA-re
 
 ## How I used AI
 
-I used Claude (an AI assistant) as a tutor and pair programmer on this project. It drafted much of the SQL and documentation. I made the analysis decisions, reran the full build myself, and checked the results against the QA log.
+I used Claude (an AI assistant) as a tutor and final reviewer on this project. I chose the question and the ACO framing, wrote all of the SQL, including the raw load step and the member month definition, and made the call on the final recommendation and who the memo is for. Claude helped with first drafts of the documentation and the web dashboard, answered questions as I worked, and served as a final check on my SQL. I reviewed each step, ran the full build until all 27 QA checks passed, and built the Tableau version on my own.
 
 ## Run it yourself
 
