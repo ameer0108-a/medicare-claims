@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medicare Claims Warehouse</title>
+<meta name="description" content="Cost, utilization, and medication adherence for a synthetic Medicare ACO population, 2015 to 2022.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, summary tiles first, then one section per question,
+   chart cards two-up on wide screens and stacked on phones. */
+:root {
+  --page: #f4f5f2;
+  --surface: #fcfcfb;
+  --ink: #111312;
+  --ink-2: #4f524e;
+  --muted: #73766f;
+  --grid: #e3e4de;
+  --axis: #c4c6bd;
+  --border: rgba(17, 19, 18, 0.11);
+  --accent: #2a78d6;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --s5: #e87ba4;
+  --quiet: #b9bcb3;
+  --pos: #2a78d6;
+  --neg: #e34948;
+  --ord1: #86b6ef;
+  --ord2: #5598e7;
+  --ord3: #256abf;
+  --ord4: #104281;
+  --font-ui: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #101110;
+    --surface: #1a1b1a;
+    --ink: #f4f5f2;
+    --ink-2: #c4c6bd;
+    --muted: #979a92;
+    --grid: #2c2e2b;
+    --axis: #3b3d39;
+    --border: rgba(244, 245, 242, 0.10);
+    --accent: #3987e5;
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+    --quiet: #5b5e57;
+    --pos: #3987e5;
+    --neg: #e66767;
+    --ord1: #184f95;
+    --ord2: #2a78d6;
+    --ord3: #5598e7;
+    --ord4: #9ec5f4;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #101110;
+  --surface: #1a1b1a;
+  --ink: #f4f5f2;
+  --ink-2: #c4c6bd;
+  --muted: #979a92;
+  --grid: #2c2e2b;
+  --axis: #3b3d39;
+  --border: rgba(244, 245, 242, 0.10);
+  --accent: #3987e5;
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --s5: #d55181;
+  --quiet: #5b5e57;
+  --pos: #3987e5;
+  --neg: #e66767;
+  --ord1: #184f95;
+  --ord2: #2a78d6;
+  --ord3: #5598e7;
+  --ord4: #9ec5f4;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 32px 56px;
+  display: grid;
+  gap: 40px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+h2 { font-size: 1.25rem; font-weight: 650; }
+h3 { font-size: 0.98rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--accent); }
+a:focus-visible, summary:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.82em; }
+
+header { display: grid; gap: 10px; }
+.eyebrow {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.lede { color: var(--ink-2); font-size: 1.02rem; }
+.flag {
+  display: block; width: fit-content; max-width: 100%;
+  padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface);
+  color: var(--ink-2); font-size: 0.85rem;
+}
+.flag strong { color: var(--ink); font-weight: 600; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; display: grid; gap: 4px; align-content: start;
+}
+.tile .label { font-size: 0.82rem; color: var(--ink-2); }
+.tile .value { font-size: 1.75rem; font-weight: 650; line-height: 1.15; }
+.tile .sub { font-size: 0.8rem; color: var(--muted); }
+.trio { display: grid; grid-template-columns: repeat(3, auto); gap: 4px 14px; justify-content: start; }
+.trio .value { font-size: 1.25rem; }
+.trio .k { font-size: 0.75rem; color: var(--muted); }
+
+section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--ink-2); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 16px 12px; display: grid; gap: 10px; min-width: 0;
+}
+.card .note { font-size: 0.85rem; color: var(--ink-2); }
+.chart { position: relative; height: 280px; }
+.chart.short { height: 220px; }
+.chart.tall { height: 320px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.legend i.line { height: 2px; width: 14px; border-radius: 1px; }
+.source { font-size: 0.75rem; color: var(--muted); }
+.source code { font-size: 0.72rem; }
+
+details { font-size: 0.85rem; }
+details summary { cursor: pointer; color: var(--ink-2); width: fit-content; }
+.tablewrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+th, td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--ink-2); font-weight: 600; }
+
+.notes { display: grid; gap: 10px; }
+.notes ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; color: var(--ink-2); }
+.notes li strong { color: var(--ink); font-weight: 600; }
+footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 16px; display: grid; gap: 4px; }
+.err { color: var(--neg); font-size: 0.85rem; }
+
+@media (max-width: 520px) {
+  .wrap { padding-inline: 16px; gap: 32px; }
+  h1 { font-size: 1.5rem; }
+  .chart { height: 250px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Medicare claims warehouse · 2015 to 2022</div>
+  <h1>Where an ACO's Medicare dollars go, and what would actually bring them down</h1>
+  <p class="lede">About 8,000 traditional Medicare members, 1.9 million claim lines, and 515,000 pharmacy fills, built into a SQL warehouse in DuckDB. Dollars are Medicare paid amounts. Rates use member months with both Part A and Part B as the denominator.</p>
+  <div class="flag"><strong>Synthetic data.</strong>&nbsp; CMS built these files to look like real claims. The people aren't real and some patterns aren't either. The method is the point.</div>
+</header>
+
+<section aria-labelledby="kpi-h">
+  <h2 id="kpi-h" class="eyebrow">2022 at a glance</h2>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<section aria-labelledby="s1">
+  <div class="section-head">
+    <h2 id="s1">Where the money goes</h2>
+    <p>Medical spend per member per month (PMPM) grew 39% from 2015 to 2022. Outpatient dialysis was the fastest growing piece, and members with end-stage renal disease (ESRD) carry a third of all spend.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Medical PMPM by service category</h3>
+      <div class="legend" id="leg-cat"></div>
+      <div class="chart tall"><canvas id="c-cat" role="img" aria-label="Stacked columns of PMPM by service category, 2015 to 2022"></canvas></div>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-cat"></div></details>
+      <div class="source">Source: <code>mart.pmpm_by_category</code>, 06_pmpm_utilization.sql</div>
+    </div>
+    <div class="card">
+      <h3>ESRD: 10% of member months, 32% of spend</h3>
+      <div class="legend">
+        <span><i style="background: var(--quiet)"></i>Share of member months</span>
+        <span><i style="background: var(--s1)"></i>Share of medical spend</span>
+      </div>
+      <div class="chart tall"><canvas id="c-enr" role="img" aria-label="Share of member months and share of spend by enrollment type, 2022"></canvas></div>
+      <p class="note">Enrollment types follow the four groups the Medicare Shared Savings Program uses to set ACO benchmarks. ESRD PMPM was $5,447 in 2022, 5.3 times the aged non-dual group.</p>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-enr"></div></details>
+      <div class="source">Source: <code>mart.pmpm_by_enrollment_type</code>, 06_pmpm_utilization.sql</div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="s2">
+  <div class="section-head">
+    <h2 id="s2">Who drives it</h2>
+    <p>A small group of members accounts for most of the spend. The question for care management is whether the same people stay expensive next year.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Share of 2022 medical spend by member cost rank</h3>
+      <div class="chart short"><canvas id="c-conc" role="img" aria-label="Share of spend from top 1, 5, 10, 20 percent and bottom 50 percent of members"></canvas></div>
+      <p class="note">The top 5% (408 people) averaged $190,000 each. 55% of them have ESRD.</p>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-conc"></div></details>
+      <div class="source">Source: <code>mart.spend_concentration</code>, <code>mart.top5_profile</code>, 07_high_cost_and_cohorts.sql</div>
+    </div>
+    <div class="card">
+      <h3>2021's top 5%, one year later</h3>
+      <div class="chart short"><canvas id="c-pers" role="img" aria-label="Where the 2021 top 5 percent of spenders ranked in 2022"></canvas></div>
+      <p class="note">About half stayed in the top 5%, and 70% of those have ESRD. The 66 who fell below the top 20% went from $167,000 to $6,000 on average with no program at all. A before and after comparison would give a program credit for that drop.</p>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-pers"></div></details>
+      <div class="source">Source: <code>mart.top5_persistence</code>, 07_high_cost_and_cohorts.sql</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>PMPM by chronic condition, 2022</h3>
+    <div class="chart short"><canvas id="c-coh" role="img" aria-label="PMPM by chronic condition cohort, 2022"></canvas></div>
+    <p class="note">Groups overlap, so one person can count in several. Heart failure is barely coded in this data (32 people, 0.4%, against roughly 14% in real Medicare), so its figure isn't meaningful.</p>
+    <details><summary>Show the numbers</summary><div class="tablewrap" id="t-coh"></div></details>
+    <div class="source">Source: <code>mart.cohort_summary</code>, 07_high_cost_and_cohorts.sql. Condition rule: 1 facility claim or 2 outpatient or professional claims on different days in the year.</div>
+  </div>
+</section>
+
+<section aria-labelledby="s3">
+  <div class="section-head">
+    <h2 id="s3">Hospital use</h2>
+    <p>Counted as overnight stays. 73% of inpatient claims in this file start and end the same day and pay under $1,000 at the median, which doesn't match real Medicare, so they stay in spend but not in admission counts.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Overnight admissions per 1,000 members</h3>
+      <div class="chart short"><canvas id="c-adm" role="img" aria-label="Overnight admissions per 1,000 members by year"></canvas></div>
+      <p class="note">Real Medicare fee-for-service ran about 197 stays per 1,000 in FY2024 (MedPAC), so this population is light on admissions.</p>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-adm"></div></details>
+      <div class="source">Source: <code>mart.utilization_by_year</code>, 05_inpatient_stays.sql</div>
+    </div>
+    <div class="card">
+      <h3>30-day all-cause readmission rate</h3>
+      <div class="legend">
+        <span><i class="line" style="background: var(--s1)"></i>This population</span>
+        <span><i class="line" style="background: var(--muted)"></i>Medicare benchmark, 16.9% (HCUP, 2018)</span>
+      </div>
+      <div class="chart short"><canvas id="c-readm" role="img" aria-label="30-day readmission rate by year with a benchmark line"></canvas></div>
+      <p class="note">Low, but it nearly quadrupled since 2015. If same-day claims counted as admissions, the rate would be 31%.</p>
+      <details><summary>Show the numbers</summary><div class="tablewrap" id="t-readm"></div></details>
+      <div class="source">Source: <code>mart.readmission</code>, 05_inpatient_stays.sql</div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="s4">
+  <div class="section-head">
+    <h2 id="s4">Medication adherence</h2>
+    <p>Proportion of days covered (PDC) for the three Part D Star adherence measures, using the PQA method. A member counts as adherent at 80% or more. The 60 to 79% band is the outreach list: one or two refills on time gets most of them over the line.</p>
+  </div>
+  <div class="card">
+    <h3>2022 members by PDC band</h3>
+    <div class="legend" id="leg-pdc"></div>
+    <div class="chart short"><canvas id="c-pdc" role="img" aria-label="Members by PDC band for statins, RAS antagonists, and diabetes medications"></canvas></div>
+    <p class="note">Statins 81.6% adherent (892 members), RAS antagonists 20.5% (516), diabetes 14.3% (56). Real plans run in the high 80s; the synthetic fill patterns have long gaps.</p>
+    <details><summary>Show the numbers</summary><div class="tablewrap" id="t-pdc"></div></details>
+    <div class="source">Source: <code>mart.pdc_result</code>, 08_pdc_adherence.sql. Drug lists built from RxNorm, see docs/measure_specs.md.</div>
+  </div>
+</section>
+
+<section aria-labelledby="s5">
+  <div class="section-head">
+    <h2 id="s5">What would pay off</h2>
+    <p>Two programs priced with low, base, and high assumptions. Pharmacy outreach to the 270 near misses pays back in the base case. Care management for last year's 167 non-ESRD high spenders loses money unless it cuts admissions by 25%, and the best program in Medicare's care coordination trials managed 17%.</p>
+  </div>
+  <div class="card">
+    <h3>Net savings per year by scenario</h3>
+    <div class="legend">
+      <span><i style="background: var(--pos)"></i>Saves money</span>
+      <span><i style="background: var(--neg)"></i>Loses money</span>
+    </div>
+    <div class="chart short"><canvas id="c-roi" role="img" aria-label="Net savings by program and scenario"></canvas></div>
+    <details><summary>Show the numbers</summary><div class="tablewrap" id="t-roi"></div></details>
+    <div class="source">Source: model/outreach_roi.xlsx. Assumptions and sources are on its Assumptions tab (Roebuck et al. 2011; Peikes et al. 2009; MedPAC 2026).</div>
+  </div>
+</section>
+
+<section class="notes" aria-labelledby="s6">
+  <h2 id="s6">About this data</h2>
+  <ul>
+    <li><strong>Synthetic.</strong> CMS's synthetic Medicare files mimic the layout of real research files. Counts and patterns are useful for building and testing logic, not for real conclusions.</li>
+    <li><strong>Medicare Advantage flag.</strong> About 60% of fee-for-service claims fall in months where the person also shows a Part C contract, which can't happen in real data. I treated everyone as traditional Medicare. Dropping those months moves 2022 PMPM from $1,665 to $1,692.</li>
+    <li><strong>No ER measure.</strong> The outpatient file has no ER revenue codes and the professional file has no ER visit codes or place of service 23.</li>
+    <li><strong>Paid, not allowed.</strong> The institutional files don't carry an allowed amount, so every dollar here is what Medicare paid.</li>
+    <li><strong>Checks.</strong> 27 reconciliation checks run at the end of every build, from raw row counts to two PDC values worked by hand. All pass. The QA log covers every decision above.</li>
+  </ul>
+  <p class="source" id="repo-links"></p>
+</section>
+
+<footer>
+  <div>Built by Ameer Salameh. SQL in DuckDB, charts in Chart.js.</div>
+  <div>Data: CMS Synthetic Medicare Enrollment, Fee-for-Service Claims, and Prescription Drug Event files.</div>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+  const css = () => getComputedStyle(document.documentElement);
+  const v = name => css().getPropertyValue(name).trim();
+  const usd = n => '$' + Math.round(n).toLocaleString('en-US');
+  const usdK = n => (n < 0 ? '-' : '') + '$' + Math.round(Math.abs(n) / 1000).toLocaleString('en-US') + 'K';
+  const pct = (n, d = 1) => Number(n).toFixed(d) + '%';
+  const charts = [];
+  let DATA = null;
+
+  // Links back to the repo only make sense on GitHub Pages (user.github.io/repo/)
+  (function repoLinks() {
+    const el = document.getElementById('repo-links');
+    const host = location.hostname;
+    if (host.endsWith('github.io')) {
+      const user = host.split('.')[0];
+      const repo = location.pathname.split('/').filter(Boolean)[0] || '';
+      const base = 'https://github.com/' + user + '/' + repo + '/blob/main/';
+      [['README', 'README.md'], ['QA log', 'docs/qa_log.md'], ['Measure specs', 'docs/measure_specs.md'], ['Data dictionary', 'docs/data_dictionary.md']]
+        .forEach(([label, path], i) => {
+          if (i) el.appendChild(document.createTextNode(' · '));
+          const a = document.createElement('a'); a.href = base + path; a.textContent = label; el.appendChild(a);
+        });
+    } else {
+      el.textContent = 'Details in the repo: README.md, docs/qa_log.md, docs/measure_specs.md, docs/data_dictionary.md.';
+    }
+  })();
+
+  function table(id, headers, rows) {
+    const t = document.createElement('table');
+    const hr = t.createTHead().insertRow();
+    headers.forEach(h => { const th = document.createElement('th'); th.textContent = h; hr.appendChild(th); });
+    const tb = t.createTBody();
+    rows.forEach(r => { const tr = tb.insertRow(); r.forEach(c => { const td = tr.insertCell(); td.textContent = c; }); });
+    const host = document.getElementById(id); host.replaceChildren(t);
+  }
+
+  function legend(id, items, shape) {
+    const el = document.getElementById(id); el.replaceChildren();
+    items.forEach(([label, color]) => {
+      const s = document.createElement('span'); const i = document.createElement('i');
+      if (shape === 'line') i.className = 'line';
+      i.style.background = color; s.appendChild(i); s.appendChild(document.createTextNode(label)); el.appendChild(s);
+    });
+  }
+
+  // Value at the end of each bar (single-series charts only)
+  const endLabels = {
+    id: 'endLabels',
+    afterDatasetsDraw(chart, args, opts) {
+      if (!opts || !opts.format) return;
+      const { ctx } = chart; ctx.save();
+      ctx.font = '500 12px ' + v('--font-ui'); ctx.fillStyle = v('--ink-2');
+      const horizontal = chart.options.indexAxis === 'y';
+      chart.data.datasets.forEach((ds, di) => {
+        if (opts.datasets && !opts.datasets.includes(di)) return;
+        chart.getDatasetMeta(di).data.forEach((bar, i) => {
+          const val = ds.data[i]; const text = opts.format(val, i, di);
+          if (horizontal) {
+            const neg = val < 0;
+            ctx.textAlign = neg ? 'right' : 'left'; ctx.textBaseline = 'middle';
+            ctx.fillText(text, bar.x + (neg ? -6 : 6), bar.y);
+          } else {
+            ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+            ctx.fillText(text, bar.x, bar.y - 4);
+          }
+        });
+      });
+      ctx.restore();
+    }
+  };
+
+  // Hairline that follows the hovered x position on line charts
+  const crosshair = {
+    id: 'crosshair',
+    afterDraw(chart) {
+      const act = chart.tooltip && chart.tooltip.getActiveElements();
+      if (!act || !act.length || chart.config.type !== 'line') return;
+      const x = act[0].element.x; const { top, bottom } = chart.chartArea; const ctx = chart.ctx;
+      ctx.save(); ctx.strokeStyle = v('--axis'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke(); ctx.restore();
+    }
+  };
+
+  function base(extra) {
+    const grid = v('--grid'), muted = v('--muted');
+    const o = {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      layout: { padding: { top: 18, right: 12 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: v('--surface'), borderColor: v('--border'), borderWidth: 1,
+          titleColor: v('--ink-2'), bodyColor: v('--ink'), padding: 10, cornerRadius: 6,
+          titleFont: { family: v('--font-ui'), weight: '500', size: 12 },
+          bodyFont: { family: v('--font-ui'), weight: '600', size: 12 },
+          usePointStyle: true, boxWidth: 12, boxHeight: 2
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, border: { color: v('--axis') }, ticks: { color: muted, font: { family: v('--font-ui'), size: 11 } } },
+        y: { grid: { color: grid, lineWidth: 1 }, border: { display: false }, ticks: { color: muted, font: { family: v('--font-ui'), size: 11 } } }
+      }
+    };
+    return deepMerge(o, extra || {});
+  }
+  function deepMerge(a, b) {
+    for (const k in b) {
+      if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && typeof b[k] !== 'function') a[k] = deepMerge(a[k] || {}, b[k]);
+      else a[k] = b[k];
+    }
+    return a;
+  }
+  const bar = color => ({ backgroundColor: color, hoverBackgroundColor: color, maxBarThickness: 24, borderRadius: 4, borderSkipped: 'start' });
+
+  function draw() {
+    charts.splice(0).forEach(c => c.destroy());
+    const d = DATA; if (!d) return;
+    const years = d.pmpm.map(r => String(r.year));
+    const y22 = d.pmpm.find(r => r.year === 2022);
+    const u22 = d.util.find(r => r.year === 2022);
+    const u21 = d.util.find(r => r.year === 2021);
+    const c22 = d.conc.find(r => r.year === 2022);
+    const rate = m => d.pdcRates.find(r => r.measure === m && r.year === 2022);
+
+    // tiles
+    const tiles = document.getElementById('tiles'); tiles.replaceChildren();
+    const tile = (label, value, sub) => {
+      const t = document.createElement('div'); t.className = 'tile';
+      [['label', label], ['value', value], ['sub', sub]].forEach(([c, txt]) => { const e = document.createElement('div'); e.className = c; e.textContent = txt; t.appendChild(e); });
+      tiles.appendChild(t);
+    };
+    tile('Members', y22.members.toLocaleString('en-US'), y22.member_months.toLocaleString('en-US') + ' member months');
+    tile('Medical PMPM', usd(y22.medical_pmpm), 'Up ' + pct(y22.medical_pmpm_change_pct) + ' from 2021');
+    tile('Spend from the top 5%', pct(c22.top_5_pct_share), 'Top 1% alone: ' + pct(c22.top_1_pct_share));
+    tile('30-day readmissions', pct(u22.readmit_rate_pct), 'Was ' + pct(u21.readmit_rate_pct) + ' in 2021');
+    const adh = document.createElement('div'); adh.className = 'tile';
+    const lab = document.createElement('div'); lab.className = 'label'; lab.textContent = 'Part D adherence (PDC 80%+)'; adh.appendChild(lab);
+    const trio = document.createElement('div'); trio.className = 'trio';
+    [['Statins', 'Statins'], ['RAS', 'RAS antagonists'], ['Diabetes', 'Diabetes']].forEach(([short, m]) => {
+      const val = document.createElement('div'); val.className = 'value'; val.textContent = pct(rate(m).adherence_rate_pct, 0); trio.appendChild(val);
+    });
+    ['Statins', 'RAS', 'Diabetes'].forEach(s => { const k = document.createElement('div'); k.className = 'k'; k.textContent = s; trio.appendChild(k); });
+    adh.appendChild(trio); tiles.appendChild(adh);
+
+    // 1. PMPM by category, five groups
+    const groups = [
+      ['Outpatient dialysis', ['Outpatient dialysis'], '--s1'],
+      ['Outpatient other', ['Outpatient other'], '--s2'],
+      ['Inpatient', ['Inpatient'], '--s3'],
+      ['Professional', ['Professional'], '--s4'],
+      ['SNF, home health, hospice, DME', ['SNF', 'Home health', 'Hospice', 'DME'], '--s5']
+    ];
+    const catSeries = groups.map(([name, cats, color]) => ({
+      label: name, color: v(color),
+      data: years.map(y => d.cat.filter(r => String(r.year) === y && cats.includes(r.service_category)).reduce((s, r) => s + r.pmpm, 0))
+    }));
+    legend('leg-cat', catSeries.map(s => [s.label, s.color]));
+    const surface = v('--surface');
+    charts.push(new Chart(document.getElementById('c-cat'), {
+      type: 'bar',
+      data: { labels: years, datasets: catSeries.map((s, i) => ({
+        label: s.label, data: s.data, backgroundColor: s.color, hoverBackgroundColor: s.color, maxBarThickness: 24,
+        borderColor: surface, borderWidth: { top: 2 }, borderSkipped: 'start',
+        borderRadius: i === catSeries.length - 1 ? { topLeft: 4, topRight: 4 } : 0
+      })) },
+      options: base({
+        interaction: { mode: 'index', intersect: false },
+        plugins: { tooltip: { callbacks: { label: c => ' ' + usd(c.raw) + '  ' + c.dataset.label, footer: items => 'Total ' + usd(items.reduce((s, i) => s + i.raw, 0)) }, footerColor: v('--ink'), itemSort: (a, b) => b.datasetIndex - a.datasetIndex } },
+        scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: n => '$' + n.toLocaleString('en-US') } } }
+      })
+    }));
+    table('t-cat', ['Year'].concat(catSeries.map(s => s.label), ['Total']),
+      years.map((y, i) => [y].concat(catSeries.map(s => usd(s.data[i])), [usd(d.pmpm[i].medical_pmpm)])));
+
+    // 2. Enrollment type: share of months vs share of spend
+    const enrOrder = ['ESRD', 'Disabled', 'Aged dual', 'Aged non-dual'];
+    const enr = enrOrder.map(t => d.enr.find(r => r.enrollment_type === t));
+    charts.push(new Chart(document.getElementById('c-enr'), {
+      type: 'bar',
+      data: { labels: enrOrder, datasets: [
+        Object.assign({ label: 'Share of member months', data: enr.map(r => r.pct_of_member_months) }, bar(v('--quiet'))),
+        Object.assign({ label: 'Share of medical spend', data: enr.map(r => r.pct_of_spend) }, bar(v('--s1')))
+      ] },
+      options: base({
+        indexAxis: 'y',
+        plugins: { endLabels: { format: n => pct(n) }, tooltip: { callbacks: { label: c => ' ' + pct(c.raw) + '  ' + c.dataset.label } } },
+        scales: { x: { grid: { display: true, color: v('--grid') }, border: { display: false }, max: 50, ticks: { stepSize: 10, callback: n => n + '%' } }, y: { grid: { display: false }, border: { color: v('--axis') } } },
+        layout: { padding: { right: 36 } }
+      }),
+      plugins: [endLabels]
+    }));
+    table('t-enr', ['Enrollment type', 'Members', 'Member months', '% of months', '% of spend', 'PMPM'],
+      enr.map(r => [r.enrollment_type, r.members.toLocaleString('en-US'), r.member_months.toLocaleString('en-US'), pct(r.pct_of_member_months), pct(r.pct_of_spend), usd(r.pmpm)]));
+
+    // 3. Concentration
+    const concLabels = ['Top 1%', 'Top 5%', 'Top 10%', 'Top 20%', 'Bottom 50%'];
+    const concVals = [c22.top_1_pct_share, c22.top_5_pct_share, c22.top_10_pct_share, c22.top_20_pct_share, c22.bottom_50_pct_share];
+    charts.push(new Chart(document.getElementById('c-conc'), {
+      type: 'bar',
+      data: { labels: concLabels, datasets: [Object.assign({ label: 'Share of 2022 spend', data: concVals }, bar(v('--s1')))] },
+      options: base({
+        indexAxis: 'y',
+        plugins: { endLabels: { format: n => pct(n) }, tooltip: { callbacks: { label: c => ' ' + pct(c.raw) + ' of spend' } } },
+        scales: { x: { grid: { display: true, color: v('--grid') }, border: { display: false }, max: 100, ticks: { stepSize: 20, callback: n => n + '%' } }, y: { grid: { display: false }, border: { color: v('--axis') } } },
+        layout: { padding: { right: 36 } }
+      }),
+      plugins: [endLabels]
+    }));
+    table('t-conc', ['Year', 'Members', 'Top 1%', 'Top 5%', 'Top 10%', 'Top 20%', 'Bottom 50%'],
+      d.conc.map(r => [String(r.year), r.members.toLocaleString('en-US'), pct(r.top_1_pct_share), pct(r.top_5_pct_share), pct(r.top_10_pct_share), pct(r.top_20_pct_share), pct(r.bottom_50_pct_share)]));
+
+    // 4. Persistence
+    const persOrder = ['Still top 5%', 'Top 6-20%', 'Below top 20%'];
+    const pers = persOrder.map(p => d.pers.find(r => r.where_in_2022 === p));
+    charts.push(new Chart(document.getElementById('c-pers'), {
+      type: 'bar',
+      data: { labels: persOrder, datasets: [Object.assign({ label: 'Share of the 2021 top 5%', data: pers.map(r => r.pct_of_2021_top5) }, bar(v('--s1')))] },
+      options: base({
+        indexAxis: 'y',
+        plugins: { endLabels: { format: (n, i) => pct(n) + '  (' + pers[i].members + ')' }, tooltip: { callbacks: { label: c => ' ' + pct(c.raw) + ' of the 2021 top 5%', afterLabel: c => ' Avg paid ' + usd(pers[c.dataIndex].avg_paid_2021) + ' in 2021, ' + usd(pers[c.dataIndex].avg_paid_2022) + ' in 2022' } } },
+        scales: { x: { grid: { display: true, color: v('--grid') }, border: { display: false }, max: 70, ticks: { stepSize: 10, callback: n => n + '%' } }, y: { grid: { display: false }, border: { color: v('--axis') } } },
+        layout: { padding: { right: 70 } }
+      }),
+      plugins: [endLabels]
+    }));
+    table('t-pers', ['Where they landed in 2022', 'Members', '% of group', 'Avg paid 2021', 'Avg paid 2022', '% ESRD'],
+      pers.map(r => [r.where_in_2022, String(r.members), pct(r.pct_of_2021_top5), usd(r.avg_paid_2021), usd(r.avg_paid_2022), pct(r.pct_esrd)]));
+
+    // 5. Cohorts
+    const cohOrder = ['CKD', 'COPD', 'Diabetes', 'Heart failure', 'All members', 'None of the four'];
+    const coh = cohOrder.map(c => d.coh.find(r => r.cohort === c));
+    charts.push(new Chart(document.getElementById('c-coh'), {
+      type: 'bar',
+      data: { labels: cohOrder, datasets: [Object.assign({ label: 'PMPM', data: coh.map(r => r.pmpm),
+        backgroundColor: coh.map(r => r.cohort === 'All members' ? v('--quiet') : v('--s1')) }, { maxBarThickness: 24, borderRadius: 4, borderSkipped: 'start' })] },
+      options: base({
+        plugins: { endLabels: { format: n => usd(n) }, tooltip: { callbacks: { label: c => ' ' + usd(c.raw) + ' PMPM', afterLabel: c => ' ' + coh[c.dataIndex].members.toLocaleString('en-US') + ' members (' + pct(coh[c.dataIndex].prevalence_pct) + ')' } } },
+        scales: { y: { ticks: { callback: n => '$' + n.toLocaleString('en-US') } } }
+      }),
+      plugins: [endLabels]
+    }));
+    table('t-coh', ['Group', 'Members', 'Prevalence', 'PMPM', 'Overnight admits per 1,000'],
+      coh.map(r => [r.cohort, r.members.toLocaleString('en-US'), pct(r.prevalence_pct), usd(r.pmpm), r.admits_per_1000.toFixed(1)]));
+
+    // 6 and 7. Hospital use lines
+    const line = (id, label, values, fmt, extraDatasets, yOpts) => {
+      const color = v('--s1');
+      const ds = [{ label, data: values, borderColor: color, backgroundColor: color, borderWidth: 2, tension: 0,
+        pointRadius: values.map((_, i) => i === values.length - 1 ? 4 : 0), pointHoverRadius: 5,
+        pointBorderColor: v('--surface'), pointBorderWidth: 2, pointStyle: 'line' }].concat(extraDatasets || []);
+      charts.push(new Chart(document.getElementById(id), {
+        type: 'line',
+        data: { labels: years, datasets: ds },
+        options: base({
+          interaction: { mode: 'index', intersect: false },
+          plugins: { tooltip: { callbacks: { label: c => ' ' + fmt(c.raw) + '  ' + c.dataset.label } } },
+          scales: { y: Object.assign({ beginAtZero: true, ticks: { callback: fmt } }, yOpts || {}) },
+          layout: { padding: { right: 52 } }
+        }),
+        plugins: [crosshair, endPoint(fmt)]
+      }));
+    };
+    function endPoint(fmt) {
+      return { id: 'endPoint', afterDatasetsDraw(chart) {
+        const meta = chart.getDatasetMeta(0); const pt = meta.data[meta.data.length - 1]; if (!pt) return;
+        const ctx = chart.ctx; ctx.save(); ctx.font = '600 12px ' + v('--font-ui'); ctx.fillStyle = v('--ink');
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText(fmt(chart.data.datasets[0].data.at(-1)), pt.x + 8, pt.y); ctx.restore();
+      } };
+    }
+    line('c-adm', 'Admits per 1,000', d.util.map(r => r.admits_per_1000), n => Number(n).toFixed(0));
+    line('c-readm', 'This population', d.util.map(r => r.readmit_rate_pct), n => Number(n).toFixed(1) + '%',
+      [{ label: 'Medicare benchmark (HCUP 2018)', data: years.map(() => 16.9), borderColor: v('--muted'), borderWidth: 1, pointRadius: 0, pointHoverRadius: 0, pointStyle: 'line' }],
+      { max: 20 });
+    table('t-adm', ['Year', 'Overnight admits per 1,000', 'Inpatient days per 1,000', 'Same-day inpatient claims per 1,000', 'SNF days per 1,000'],
+      d.util.map(r => [String(r.year), r.admits_per_1000.toFixed(1), r.inpatient_days_per_1000.toFixed(1), r.same_day_inpatient_per_1000.toFixed(1), r.snf_days_per_1000.toFixed(1)]));
+    table('t-readm', ['Year', '30-day readmission rate'], d.util.map(r => [String(r.year), pct(r.readmit_rate_pct)]));
+
+    // 8. PDC bands, 100% stacked
+    const bands = [['Under 40%', '--ord1'], ['40-59%', '--ord2'], ['60-79%', '--ord3'], ['80%+', '--ord4']];
+    const measures = ['Statins', 'RAS antagonists', 'Diabetes'];
+    const totals = measures.map(m => d.bands.filter(r => r.measure === m).reduce((s, r) => s + r.members, 0));
+    const bandSets = bands.map(([b, color], i) => {
+      const counts = measures.map(m => (d.bands.find(r => r.measure === m && r.pdc_band === b) || { members: 0 }).members);
+      return { label: 'PDC ' + b, counts, data: counts.map((c, j) => 100 * c / totals[j]), backgroundColor: v(color), hoverBackgroundColor: v(color),
+        maxBarThickness: 24, borderColor: surface, borderWidth: { right: 2 }, borderSkipped: 'start',
+        borderRadius: i === bands.length - 1 ? { topRight: 4, bottomRight: 4 } : 0 };
+    });
+    legend('leg-pdc', bandSets.map(s => [s.label, s.backgroundColor]));
+    charts.push(new Chart(document.getElementById('c-pdc'), {
+      type: 'bar',
+      data: { labels: measures, datasets: bandSets },
+      options: base({
+        indexAxis: 'y',
+        interaction: { mode: 'index', intersect: false },
+        plugins: { tooltip: { callbacks: { label: c => ' ' + c.dataset.counts[c.dataIndex] + ' members (' + pct(c.raw) + ')  ' + c.dataset.label } } },
+        scales: { x: { stacked: true, max: 100, grid: { display: true, color: v('--grid') }, border: { display: false }, ticks: { callback: n => n + '%' } }, y: { stacked: true, grid: { display: false }, border: { color: v('--axis') } } }
+      })
+    }));
+    table('t-pdc', ['Measure', 'Denominator'].concat(bands.map(b => 'PDC ' + b[0])).concat(['Adherent']),
+      measures.map((m, j) => [m, String(totals[j])].concat(bandSets.map(s => String(s.counts[j]))).concat([pct(rate(m).adherence_rate_pct)])));
+
+    // 9. ROI
+    const roiLabels = d.roi.map(r => (r.program === 'Adherence outreach' ? 'Outreach' : 'Care mgmt') + ', ' + r.scenario.toLowerCase());
+    charts.push(new Chart(document.getElementById('c-roi'), {
+      type: 'bar',
+      data: { labels: roiLabels, datasets: [{ label: 'Net savings', data: d.roi.map(r => r.net_savings),
+        backgroundColor: d.roi.map(r => r.net_savings < 0 ? v('--neg') : v('--pos')), maxBarThickness: 24, borderRadius: 4, borderSkipped: 'start' }] },
+      options: base({
+        indexAxis: 'y',
+        plugins: { endLabels: { format: n => usdK(n) }, tooltip: { callbacks: { label: c => ' ' + usd(c.raw) + ' net per year', afterLabel: c => ' ' + d.roi[c.dataIndex].members_targeted + ' members targeted, $' + d.roi[c.dataIndex].return_per_dollar.toFixed(2) + ' back per $1' } } },
+        scales: { x: { min: -700000, max: 450000, grid: { display: true, color: v('--grid') }, border: { display: false }, ticks: { callback: n => usdK(n) } }, y: { grid: { display: false }, border: { color: v('--axis') } } },
+        layout: { padding: { left: 4, right: 12 } }
+      }),
+      plugins: [endLabels]
+    }));
+    table('t-roi', ['Program', 'Scenario', 'Members targeted', 'Net savings', 'Back per $1'],
+      d.roi.map(r => [r.program, r.scenario, String(r.members_targeted), usd(r.net_savings), '$' + r.return_per_dollar.toFixed(2)]));
+  }
+
+  const files = {
+    pmpm: 'pmpm_by_year', cat: 'pmpm_by_category', enr: 'enrollment_type_2022', util: 'utilization_by_year',
+    conc: 'spend_concentration', pers: 'top5_persistence', coh: 'cohort_summary', pdcRates: 'pdc_rates',
+    bands: 'pdc_bands', roi: 'roi_scenarios'
+  };
+  async function load() {
+    if (window.DASHBOARD_DATA) return window.DASHBOARD_DATA;
+    const out = {};
+    await Promise.all(Object.entries(files).map(async ([k, f]) => {
+      const r = await fetch('data/' + f + '.json'); if (!r.ok) throw new Error(f + '.json: ' + r.status); out[k] = await r.json();
+    }));
+    return out;
+  }
+  load().then(d => {
+    DATA = d;
+    if (!window.Chart) throw new Error('Chart.js did not load');
+    Chart.defaults.font.family = v('--font-ui');
+    draw();
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', draw);
+    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  }).catch(err => {
+    const p = document.createElement('p'); p.className = 'err';
+    p.textContent = 'The charts could not load (' + err.message + '). If you opened this file straight from your computer, serve the docs folder instead, for example: python -m http.server, then open localhost:8000.';
+    document.querySelector('.wrap').insertBefore(p, document.querySelector('.wrap').children[1]);
+  });
+})();
+</script>
+</body>
+</html>
