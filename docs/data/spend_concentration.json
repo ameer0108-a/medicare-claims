@@ -1,0 +1,10 @@
+[
+	{"year":2015,"members":5642,"total_paid":80859458.39,"top_1_pct_share":20.6,"top_5_pct_share":49.5,"top_10_pct_share":67.5,"top_20_pct_share":82.4,"bottom_50_pct_share":2.4,"members_with_zero_spend":672},
+	{"year":2016,"members":5930,"total_paid":98636998.75,"top_1_pct_share":18.8,"top_5_pct_share":47.0,"top_10_pct_share":65.0,"top_20_pct_share":80.5,"bottom_50_pct_share":3.1,"members_with_zero_spend":193},
+	{"year":2017,"members":6237,"total_paid":113887399.65,"top_1_pct_share":26.1,"top_5_pct_share":51.6,"top_10_pct_share":68.0,"top_20_pct_share":82.2,"bottom_50_pct_share":2.9,"members_with_zero_spend":192},
+	{"year":2018,"members":6599,"total_paid":120331961.38,"top_1_pct_share":25.7,"top_5_pct_share":51.1,"top_10_pct_share":66.9,"top_20_pct_share":81.1,"bottom_50_pct_share":3.0,"members_with_zero_spend":195},
+	{"year":2019,"members":7016,"total_paid":113243742.33,"top_1_pct_share":14.1,"top_5_pct_share":43.5,"top_10_pct_share":62.6,"top_20_pct_share":79.2,"bottom_50_pct_share":3.3,"members_with_zero_spend":206},
+	{"year":2020,"members":7386,"total_paid":129788933.18,"top_1_pct_share":14.6,"top_5_pct_share":43.2,"top_10_pct_share":62.6,"top_20_pct_share":79.3,"bottom_50_pct_share":3.2,"members_with_zero_spend":189},
+	{"year":2021,"members":7772,"total_paid":142694691.91,"top_1_pct_share":16.0,"top_5_pct_share":43.4,"top_10_pct_share":62.5,"top_20_pct_share":78.8,"bottom_50_pct_share":4.1,"members_with_zero_spend":75},
+	{"year":2022,"members":8175,"total_paid":163365248.41,"top_1_pct_share":21.1,"top_5_pct_share":47.5,"top_10_pct_share":66.6,"top_20_pct_share":82.1,"bottom_50_pct_share":2.8,"members_with_zero_spend":252}
+]

@@ -1,0 +1,14 @@
+[
+	{"measure":"RAS antagonists","pdc_band":"80%+","members":106},
+	{"measure":"Diabetes","pdc_band":"Under 40%","members":6},
+	{"measure":"RAS antagonists","pdc_band":"60-79%","members":187},
+	{"measure":"Statins","pdc_band":"60-79%","members":60},
+	{"measure":"Diabetes","pdc_band":"40-59%","members":19},
+	{"measure":"Diabetes","pdc_band":"60-79%","members":23},
+	{"measure":"Statins","pdc_band":"40-59%","members":49},
+	{"measure":"Statins","pdc_band":"Under 40%","members":55},
+	{"measure":"RAS antagonists","pdc_band":"Under 40%","members":76},
+	{"measure":"Diabetes","pdc_band":"80%+","members":8},
+	{"measure":"RAS antagonists","pdc_band":"40-59%","members":147},
+	{"measure":"Statins","pdc_band":"80%+","members":728}
+]

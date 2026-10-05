@@ -1,0 +1,10 @@
+[
+	{"year":2015,"members":5642,"member_months":67704,"medical_paid":80859458.39,"medical_pmpm":1194.31,"medical_pmpm_no_ma_months":1048.16,"partd_plan_paid_pmpm":96.49,"medical_pmpm_change_pct":null},
+	{"year":2016,"members":5930,"member_months":71160,"medical_paid":98636998.75,"medical_pmpm":1386.13,"medical_pmpm_no_ma_months":1210.49,"partd_plan_paid_pmpm":125.69,"medical_pmpm_change_pct":16.1},
+	{"year":2017,"members":6237,"member_months":74844,"medical_paid":113887399.65,"medical_pmpm":1521.66,"medical_pmpm_no_ma_months":1172.53,"partd_plan_paid_pmpm":126.77,"medical_pmpm_change_pct":9.8},
+	{"year":2018,"members":6599,"member_months":79188,"medical_paid":120331961.38,"medical_pmpm":1519.57,"medical_pmpm_no_ma_months":1425.5,"partd_plan_paid_pmpm":133.47,"medical_pmpm_change_pct":-0.1},
+	{"year":2019,"members":7016,"member_months":84192,"medical_paid":113243742.33,"medical_pmpm":1345.07,"medical_pmpm_no_ma_months":1312.7,"partd_plan_paid_pmpm":132.53,"medical_pmpm_change_pct":-11.5},
+	{"year":2020,"members":7386,"member_months":88632,"medical_paid":129788933.18,"medical_pmpm":1464.36,"medical_pmpm_no_ma_months":1466.58,"partd_plan_paid_pmpm":136.02,"medical_pmpm_change_pct":8.9},
+	{"year":2021,"members":7772,"member_months":93264,"medical_paid":142694691.91,"medical_pmpm":1530.01,"medical_pmpm_no_ma_months":1514.42,"partd_plan_paid_pmpm":137.77,"medical_pmpm_change_pct":4.5},
+	{"year":2022,"members":8175,"member_months":98100,"medical_paid":163365248.41,"medical_pmpm":1665.29,"medical_pmpm_no_ma_months":1691.86,"partd_plan_paid_pmpm":144.22,"medical_pmpm_change_pct":8.8}
+]

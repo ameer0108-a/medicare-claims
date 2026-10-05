@@ -1,0 +1,8 @@
+[
+	{"cohort":"CKD","members":1594,"prevalence_pct":19.5,"pmpm":3695.33,"admits_per_1000":155.0},
+	{"cohort":"COPD","members":260,"prevalence_pct":3.2,"pmpm":3619.01,"admits_per_1000":119.2},
+	{"cohort":"Diabetes","members":2530,"prevalence_pct":30.9,"pmpm":2809.9,"admits_per_1000":150.2},
+	{"cohort":"Heart failure","members":32,"prevalence_pct":0.4,"pmpm":1775.89,"admits_per_1000":250.0},
+	{"cohort":"All members","members":8175,"prevalence_pct":100.0,"pmpm":1665.29,"admits_per_1000":94.1},
+	{"cohort":"None of the four","members":5433,"prevalence_pct":66.5,"pmpm":1093.29,"admits_per_1000":66.3}
+]

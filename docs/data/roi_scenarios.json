@@ -1,0 +1,44 @@
+[
+ {
+  "program": "Adherence outreach",
+  "scenario": "Low",
+  "net_savings": -15842,
+  "return_per_dollar": 0.41,
+  "members_targeted": 270
+ },
+ {
+  "program": "Adherence outreach",
+  "scenario": "Base",
+  "net_savings": 53450,
+  "return_per_dollar": 4.96,
+  "members_targeted": 270
+ },
+ {
+  "program": "Adherence outreach",
+  "scenario": "High",
+  "net_savings": 261049,
+  "return_per_dollar": 39.67,
+  "members_targeted": 270
+ },
+ {
+  "program": "Care management",
+  "scenario": "Low",
+  "net_savings": -541080,
+  "return_per_dollar": 0,
+  "members_targeted": 167
+ },
+ {
+  "program": "Care management",
+  "scenario": "Base",
+  "net_savings": -223696,
+  "return_per_dollar": 0.32,
+  "members_targeted": 167
+ },
+ {
+  "program": "Care management",
+  "scenario": "High",
+  "net_savings": 314576,
+  "return_per_dollar": 3.62,
+  "members_targeted": 167
+ }
+]

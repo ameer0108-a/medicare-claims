@@ -1,0 +1,6 @@
+[
+	{"year":2022,"enrollment_type":"ESRD","members":807,"member_months":9684,"paid":52751162.94,"pmpm":5447.25,"pct_of_member_months":9.9,"pct_of_spend":32.3},
+	{"year":2022,"enrollment_type":"Disabled","members":3291,"member_months":39041,"paid":58628246.02,"pmpm":1501.71,"pct_of_member_months":39.8,"pct_of_spend":35.9},
+	{"year":2022,"enrollment_type":"Aged dual","members":1089,"member_months":12604,"paid":14198398.81,"pmpm":1126.5,"pct_of_member_months":12.8,"pct_of_spend":8.7},
+	{"year":2022,"enrollment_type":"Aged non-dual","members":3121,"member_months":36771,"paid":37787440.64,"pmpm":1027.64,"pct_of_member_months":37.5,"pct_of_spend":23.1}
+]

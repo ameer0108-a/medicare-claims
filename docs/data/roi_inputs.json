@@ -1,0 +1,17 @@
+[
+	{"input":"Statins: 2022 denominator","value":892.0},
+	{"input":"Statins: near misses (PDC 60-79%)","value":60.0},
+	{"input":"Statins: 2022 adherent","value":728.0},
+	{"input":"RAS antagonists: 2022 denominator","value":516.0},
+	{"input":"RAS antagonists: near misses (PDC 60-79%)","value":187.0},
+	{"input":"RAS antagonists: 2022 adherent","value":106.0},
+	{"input":"Diabetes: 2022 denominator","value":56.0},
+	{"input":"Diabetes: near misses (PDC 60-79%)","value":23.0},
+	{"input":"Diabetes: 2022 adherent","value":8.0},
+	{"input":"Care mgmt: 2021 top 5% non-ESRD members","value":167.0},
+	{"input":"Care mgmt: their overnight admits in 2022","value":82.0},
+	{"input":"Care mgmt: their avg paid in 2021","value":191249.0},
+	{"input":"Care mgmt: their avg paid in 2022","value":116535.0},
+	{"input":"Overnight stay paid, 2022 mean","value":31192.0},
+	{"input":"Overnight stay paid, 2022 median","value":4222.0}
+]
