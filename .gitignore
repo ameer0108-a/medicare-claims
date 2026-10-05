@@ -1,0 +1,5 @@
+data/
+docs/reference/
+*.duckdb
+*.duckdb.wal
+*.zip
