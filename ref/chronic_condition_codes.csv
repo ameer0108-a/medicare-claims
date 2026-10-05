@@ -1,0 +1,16 @@
+condition,icd10_prefix,description
+diabetes,E08,Diabetes due to underlying condition
+diabetes,E09,Drug or chemical induced diabetes
+diabetes,E10,Type 1 diabetes
+diabetes,E11,Type 2 diabetes
+diabetes,E13,Other specified diabetes
+heart_failure,I50,Heart failure
+heart_failure,I110,Hypertensive heart disease with heart failure
+heart_failure,I130,Hypertensive heart and CKD with heart failure (stage 1-4 CKD)
+heart_failure,I132,Hypertensive heart and CKD with heart failure and ESRD
+heart_failure,I0981,Rheumatic heart failure
+copd,J41,Simple and mucopurulent chronic bronchitis
+copd,J42,Unspecified chronic bronchitis
+copd,J43,Emphysema
+copd,J44,Other COPD
+ckd,N18,Chronic kidney disease (includes ESRD N186)
