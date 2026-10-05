@@ -1,0 +1,7 @@
+program,scenario,net_savings,return_per_dollar,members_targeted
+Adherence outreach,Low,-15842,0.41,270
+Adherence outreach,Base,53450,4.96,270
+Adherence outreach,High,261049,39.67,270
+Care management,Low,-541080,0,167
+Care management,Base,-223696,0.32,167
+Care management,High,314576,3.62,167

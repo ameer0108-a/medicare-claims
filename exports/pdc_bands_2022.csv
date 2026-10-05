@@ -1,0 +1,13 @@
+measure,pdc_band,members
+Diabetes,40-59%,19
+Diabetes,60-79%,23
+Diabetes,80%+,8
+Diabetes,Under 40%,6
+RAS antagonists,40-59%,147
+RAS antagonists,60-79%,187
+RAS antagonists,80%+,106
+RAS antagonists,Under 40%,76
+Statins,40-59%,49
+Statins,60-79%,60
+Statins,80%+,728
+Statins,Under 40%,55

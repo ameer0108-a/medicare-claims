@@ -1,0 +1,28 @@
+check_name,expected,actual,result
+raw carrier rows,1121004.0,1121004.0,PASS
+raw outpatient rows,575092.0,575092.0,PASS
+raw inpatient rows,58066.0,58066.0,PASS
+raw snf rows,12548.0,12548.0,PASS
+raw hha rows,6215.0,6215.0,PASS
+raw hospice rows,12107.0,12107.0,PASS
+raw dme rows,103828.0,103828.0,PASS
+raw pde rows,515520.0,515520.0,PASS
+raw beneficiary rows,86917.0,86917.0,PASS
+stg claims = distinct raw claim ids,555218.0,555218.0,PASS
+stg duplicate claim ids,0.0,0.0,PASS
+stg lines add back to raw rows,1888860.0,1888860.0,PASS
+stg claims with no from date,0.0,0.0,PASS
+stg claims with no payment,0.0,0.0,PASS
+stg pde fills with no date or days supply,0.0,0.0,PASS
+"inpatient paid, one row per claim",141046614.08,141046614.08,PASS
+carrier line payments = claim payments,127158142.15,127158142.15,PASS
+claims where payment changes across lines,0.0,0.0,PASS
+duplicate person-months,0.0,0.0,PASS
+2022 A and B member months,98100.0,98100.0,PASS
+claims 2015-2022 = matched + Part A only months,539451.0,539451.0,PASS
+stays cover every inpatient claim,20867.0,20867.0,PASS
+stays keep every inpatient dollar,141046614.08,141046614.08,PASS
+2022 category PMPM sums to total PMPM,1665.29,1665.3,PASS
+PDC hand check 1 (238 / 275 days),0.8655,0.8655,PASS
+PDC hand check 2 (213 / 292 days),0.7295,0.7295,PASS
+PDC values outside 0 to 1,0.0,0.0,PASS
