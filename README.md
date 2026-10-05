@@ -4,9 +4,10 @@ Where is an ACO's Medicare spend going, who drives it, and which of two programs
 
 The data is synthetic. CMS made it to look like the real research files, so the layout, codes, and quirks are real, but the people aren't, and some of the patterns aren't either (more on that under Limitations). The method is the product here, not the findings.
 
-**Dashboard:** [ameer0108-a.github.io/medicare-claims](https://ameer0108-a.github.io/medicare-claims/)
-**Memo:** [docs/memo.pdf](docs/memo.pdf), one page, to an ACO VP of Population Health
-**ROI model:** [model/outreach_roi.xlsx](model/outreach_roi.xlsx)
+- **Dashboard:** [ameer0108-a.github.io/medicare-claims](https://ameer0108-a.github.io/medicare-claims/)
+- **Tableau Public:** [Medicare Claims Warehouse](https://public.tableau.com/views/MedicareClaimsWarehouse/MedicalClaimsWarehouse)
+- **Memo:** [docs/memo.pdf](docs/memo.pdf), one page, to an ACO VP of Population Health
+- **ROI model:** [model/outreach_roi.xlsx](model/outreach_roi.xlsx)
 
 ## What I found
 
